@@ -41,7 +41,7 @@ WAF for WordPress is distributed and autoloaded as a Composer package.
 1. Instantiate `SzepeViktor\WordPress\Waf\HttpAnalyzer` class early in `wp-config`
     ```php
     require dirname(__DIR__) . '/vendor/autoload.php';
-    new SzepeViktor\WordPress\Waf\HttpAnalyzer();
+    new \SzepeViktor\WordPress\Waf\Components\HttpAnalyzer();
     ```
 1. Create an MU plugin in `wp-content/mu-plugins/waf4wordpress.php`
     ```php
@@ -52,7 +52,7 @@ WAF for WordPress is distributed and autoloaded as a Composer package.
     if (! function_exists('add_filter')) {
         exit;
     }
-    new SzepeViktor\WordPress\Waf\CoreEvents();
+    new \SzepeViktor\WordPress\Waf\Components\CoreEvents();
     ```
 
 ### Manual installation
@@ -69,7 +69,7 @@ Technically this is not a WordPress plugin nor an MU plugin.
     ```php
     require_once __DIR__ . '/waf/src/HttpAnalyzer.php';
     require_once __DIR__ . '/waf/src/CoreEvents.php';
-    new SzepeViktor\WordPress\Waf\HttpAnalyzer();
+    new \SzepeViktor\WordPress\Waf\Components\HttpAnalyzer();
     ```
 1. Create an MU plugin in `wp-content/mu-plugins/waf4wordpress.php`
     ```php
@@ -80,7 +80,7 @@ Technically this is not a WordPress plugin nor an MU plugin.
     if (! function_exists('add_filter')) {
         exit;
     }
-    new SzepeViktor\WordPress\Waf\CoreEvents();
+    new \SzepeViktor\WordPress\Waf\Components\CoreEvents();
     ```
 
 ### Configuration

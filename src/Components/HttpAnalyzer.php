@@ -24,7 +24,9 @@ declare(strict_types=1);
  * Constants:   W4WP_POST_LOGGING
  */
 
-namespace SzepeViktor\WordPress\Waf;
+namespace SzepeViktor\WordPress\Waf\Components;
+
+use SzepeViktor\WordPress\Waf\Core\Component;
 
 /**
  * Block bad requests and trigger Fail2ban.
@@ -35,8 +37,7 @@ namespace SzepeViktor\WordPress\Waf;
  *     require_once __DIR__ . '/waf/HttpAnalyzer.php';
  *     new SzepeViktor\WordPress\Waf\HttpAnalyzer();
  */
-final class HttpAnalyzer
-{
+final class HttpAnalyzer extends Component {
     private $prefix = 'Malicious traffic detected: ';
     private $prefix_instant = 'Break-in attempt detected: ';
     private $instant_trigger = true;
@@ -147,8 +148,22 @@ final class HttpAnalyzer
     private $result = false;
     private $debug = false;
 
-    public function __construct()
-    {
+	protected $component_setting_name = 'enable_http_analyzer';
+
+    public function __construct() {}
+
+    /**
+     * Boot.
+     *
+     * @since  0.0.2
+     * @return void
+     */
+    public function boot() {
+
+        if ( ! $this->is_active() ) {
+            return;
+        }
+
         // Don't run on CLI.
         // Don't run on install or upgrade.
         // WP_INSTALLING is available even before wp-config.php.

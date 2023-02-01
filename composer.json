@@ -1,7 +1,7 @@
 {
     "name": "szepeviktor/waf4wordpress",
     "description": "WAF for WordPress",
-    "type": "library",
+    "type": "wordpress-plugin",
     "license": "MIT",
     "require": {
         "php": "~7.4.0"

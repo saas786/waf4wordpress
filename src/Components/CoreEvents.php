@@ -22,7 +22,11 @@ declare(strict_types=1);
  * Constants:   W4WP_FACEBOOKCRAWLER
  */
 
-namespace SzepeViktor\WordPress\Waf;
+namespace SzepeViktor\WordPress\Waf\Components;
+
+use SzepeViktor\WordPress\Waf\Core\Component;
+
+use function SzepeViktor\WordPress\Waf\plugin;
 
 /**
  * WAF for WordPress Must-Use plugin part.
@@ -37,14 +41,14 @@ namespace SzepeViktor\WordPress\Waf;
  *
  * @see README.md
  */
-final class CoreEvents
-{
+final class CoreEvents extends Component {
     private $prefix = 'Malicious traffic detected: ';
     private $prefix_instant = 'Break-in attempt detected: ';
     private $wp_die_ajax_handler;
     private $wp_die_xmlrpc_handler;
     private $wp_die_handler;
     private $is_redirect = false;
+
     /**
      * Ban instead of displaying error message with `illegal_user_logins` filter.
      *
@@ -94,8 +98,23 @@ final class CoreEvents
     /** @see https://keepass.info/help/kb/pw_quality_est.html */
     private $min_password_length = 8;
 
-    public function __construct()
-    {
+
+	protected $component_setting_name = 'enable_core_events';
+
+    public function __construct() {}
+
+    /**
+     * Boot.
+     *
+     * @since  0.0.2
+     * @return void
+     */
+    public function boot() {
+
+        if ( ! $this->is_active() ) {
+            return;
+        }
+
         // Exit on local access
         // Don't run on install and upgrade
         if (

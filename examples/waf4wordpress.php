@@ -8,4 +8,4 @@ if (! function_exists('add_filter')) {
     exit;
 }
 
-new SzepeViktor\WordPress\Waf\CoreEvents();
+new \SzepeViktor\WordPress\Waf\Components\CoreEvents();
