@@ -20,13 +20,36 @@ abstract class Component {
      * Is active?.
      *
      * @return bool
+     * @throws \Exception
      */
     public function is_active() {
-        $config = plugin()->app->resolve( 'config' );
+        $config = $this->get_config();
 
-        return $config
-            && array_key_exists( $this->component_setting_name, $config )
-            && $config[ $this->component_setting_name ];
+        return $config['is_active'] ?: false;
+    }
+
+    /**
+     * Get configs.
+     *
+     * @throws \Exception
+     */
+    public function get_configs() {
+        return plugin()->app->resolve( 'config' );
+    }
+
+    /**
+     * Get config.
+     *
+     * @throws \Exception
+     */
+    public function get_config() {
+        $config = $this->get_configs();
+
+        if ( ! $config || ! $config->has( $this->component_setting_name ) ) {
+            return [];
+        }
+
+        return new Collection( $config->get( $this->component_setting_name ) );
     }
 
 }

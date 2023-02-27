@@ -99,7 +99,9 @@ final class CoreEvents extends Component {
     private $min_password_length = 8;
 
 
-	protected $component_setting_name = 'enable_core_events';
+	protected $component_setting_name = 'core_events';
+
+    protected array $component_settings = [];
 
     public function __construct() {}
 
@@ -114,6 +116,8 @@ final class CoreEvents extends Component {
         if ( ! $this->is_active() ) {
             return;
         }
+
+        $this->component_settings = $this->get_config();
 
         // Exit on local access
         // Don't run on install and upgrade
@@ -131,13 +135,13 @@ final class CoreEvents extends Component {
         }
 
         // REST API
-        if (defined('W4WP_DISABLE_REST_API') && W4WP_DISABLE_REST_API) {
+        if ($this->component_settings->get('W4WP_DISABLE_REST_API')) {
             // Remove core actions
             // Source: https://plugins.trac.wordpress.org/browser/disable-json-api/trunk/disable-json-api.php
             remove_action('xmlrpc_rsd_apis', 'rest_output_rsd');
             remove_action('wp_head', 'rest_output_link_wp_head', 10);
             remove_action('template_redirect', 'rest_output_link_header', 11);
-            if (defined('W4WP_ONLY_OEMBED') && W4WP_ONLY_OEMBED) {
+            if ($this->component_settings->get('W4WP_ONLY_OEMBED')) {
                 add_filter('rest_pre_dispatch', [ $this, 'rest_api_only_oembed' ], 0, 3);
             } else {
                 // Remove oembed core action
@@ -161,7 +165,7 @@ final class CoreEvents extends Component {
         }
         add_action('wp_logout', [ $this, 'logout' ], 0, 1);
         add_action('retrieve_password', [ $this, 'lostpass' ]);
-        if (defined('W4WP_DISABLE_LOGIN') && W4WP_DISABLE_LOGIN) {
+        if ($this->component_settings->get('W4WP_DISABLE_LOGIN')) {
             // Disable login
             add_action('login_head', [ $this, 'disable_user_login_js' ]);
             add_filter('authenticate', [ $this, 'authentication_disabled' ], 0, 2);
@@ -181,7 +185,7 @@ final class CoreEvents extends Component {
 
         // Non-existent URLs
         add_action('init', [ $this, 'url_hack' ]);
-        if (! ( defined('W4WP_ALLOW_REDIRECT') && W4WP_ALLOW_REDIRECT )) {
+        if ( ! $this->component_settings->get('W4WP_ALLOW_REDIRECT') ) {
             add_filter('redirect_canonical', [ $this, 'redirect' ], 1, 2);
         }
 
@@ -1188,7 +1192,7 @@ final class CoreEvents extends Component {
 
         // Humans and web crawling bots.
         if (
-            defined('W4WP_MSNBOT') && W4WP_MSNBOT
+            $this->component_settings->get('W4WP_MSNBOT')
             && $this->is_msnbot($ua, $_SERVER['REMOTE_ADDR'])
         ) {
             // Identified Bingbot.
@@ -1196,7 +1200,7 @@ final class CoreEvents extends Component {
         }
 
         if (
-            defined('W4WP_GOOGLEBOT') && W4WP_GOOGLEBOT
+            $this->component_settings->get('W4WP_GOOGLEBOT')
             && $this->is_googlebot($ua, $_SERVER['REMOTE_ADDR'])
         ) {
             // Identified Googlebot.
@@ -1204,7 +1208,7 @@ final class CoreEvents extends Component {
         }
 
         if (
-            defined('W4WP_YANDEXBOT') && W4WP_YANDEXBOT
+            $this->component_settings->get('W4WP_YANDEXBOT')
             && $this->is_yandexbot($ua, $_SERVER['REMOTE_ADDR'])
         ) {
             // Identified Yandexbot.
@@ -1212,7 +1216,7 @@ final class CoreEvents extends Component {
         }
 
         if (
-            defined('W4WP_GOOGLEPROXY') && W4WP_GOOGLEPROXY
+            $this->component_settings->get('W4WP_GOOGLEPROXY')
             && $this->is_google_proxy($ua, $_SERVER['REMOTE_ADDR'])
         ) {
             // Identified GoogleProxy.
@@ -1220,7 +1224,7 @@ final class CoreEvents extends Component {
         }
 
         if (
-            defined('W4WP_SEZNAMBOT') && W4WP_SEZNAMBOT
+            $this->component_settings->get('W4WP_SEZNAMBOT')
             && $this->is_seznambot($ua, $_SERVER['REMOTE_ADDR'])
         ) {
             // Identified SeznamBot.
@@ -1228,7 +1232,7 @@ final class CoreEvents extends Component {
         }
 
         if (
-            defined('W4WP_CONTENTKING') && W4WP_CONTENTKING
+            $this->component_settings->get('W4WP_CONTENTKING')
             && $this->is_contentking($ua, $_SERVER['REMOTE_ADDR'])
         ) {
             // Identified ContentKing crawler.
@@ -1236,7 +1240,7 @@ final class CoreEvents extends Component {
         }
 
         if (
-            defined('W4WP_FACEBOOKCRAWLER') && W4WP_FACEBOOKCRAWLER
+            $this->component_settings->get('W4WP_FACEBOOKCRAWLER')
             && $this->is_facebookcrawler($ua)
         ) {
             // Identified Facebook crawler.

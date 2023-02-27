@@ -84,7 +84,7 @@ class Plugin {
         $this->app->instance( 'uri', $this->uri );
         $this->app->instance( 'config_path', $this->config_path );
 
-        $this->app->instance( 'config', static fn() => new Config( $this->app, [] ) );
+        $this->app->bind( 'config', fn() => new Config( $this->app, [] ) );
 
         $this->app->provider( SettingsProvider::class );
         $this->app->provider( MainProvider::class );

@@ -148,7 +148,7 @@ final class HttpAnalyzer extends Component {
     private $result = false;
     private $debug = false;
 
-	protected $component_setting_name = 'enable_http_analyzer';
+	protected $component_setting_name = 'http_analyzer';
 
     public function __construct() {}
 
@@ -267,11 +267,9 @@ final class HttpAnalyzer extends Component {
             $this->disallow_tor_login = true;
         }
 
-        if (!defined('W4WP_POST_LOGGING') || !W4WP_POST_LOGGING) {
-            return;
+        if (defined('W4WP_POST_LOGGING') && W4WP_POST_LOGGING) {
+	        $this->debug = true;
         }
-
-        $this->debug = true;
     }
 
     /**
